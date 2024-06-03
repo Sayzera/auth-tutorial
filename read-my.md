@@ -10,7 +10,7 @@
 - npx prisma studio
 
 * NextAuth.js
-- https://next-auth.js.org/
+- https://authjs.dev/
 - Adapter
     - npm install @auth/prisma-adapter
 
