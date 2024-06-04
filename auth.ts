@@ -14,29 +14,32 @@ import { db } from "./lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
+  pages: {
+    signIn: '/auth/login',
+    error: '/auth/error',
+    
+  },
+  events: {
+    /**
+     * Kullanıcı kayıt edildikten sonra çalışır 
+     */
+    async linkAccount({user}) {
+      await db.user.update({
+        where: {
+          id:user.id
+        },
+        data: {
+          emailVerified: new Date()
+        }
+      })
+    }
+  },
   callbacks: {
     /**
      * Token objesini manupüle ettiğimizde session methodu üzerinden erişebiliyoruz
      * session değişkenini arayüzdede kullanabiliyoruz.
      */
-    async signIn({user}) {
-        const existingUser = await getUserById(user.id);
-        // Giriş yapacak kullanıcı için
 
-        // custom error 
-
-        throw new YetkisizErisim();
-
-
-
-
-        
-        if(!existingUser || !existingUser.emailVerified) {
-            return false
-        }
-
-        return true;
-    },
     async jwt({ token }) {
         if(!token.sub) return token
 
@@ -57,6 +60,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return session;
     },
+  //   async signIn({user}) {
+  //     const existingUser = await getUserById(user.id as string);
+  //     // custom error 
+  //     // throw new YetkisizErisim();
+      
+  //     if(!existingUser || !existingUser.emailVerified) {
+  //         return false
+  //     }
+
+  //     return true;
+  // },
   },
 
   session: {

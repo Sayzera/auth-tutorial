@@ -23,7 +23,8 @@ export default auth((req) => {
     return null;
   }
 
-  if (isApiAuthRoute) {
+
+  if (isAuthRoute) {
     if (isLoggedIn) {
       /**
        * eğer kullanıcı login olduysa bu ekranlara birdaha girememesi için otomatik olarak yönlendirme yapar.
