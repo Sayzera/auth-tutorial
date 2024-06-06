@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { RegisterSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
+import { generateVerificationToken } from '@/lib/tokens';
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
@@ -34,10 +36,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     }
   })
 
-  // TODO: Send verification token email
+  const verificationToken = await generateVerificationToken(email);
 
+  // TODO: Send verification token email
+  await sendVerificationEmail(verificationToken.email, verificationToken.token)
 
   return {
-    success: "Kullanıcı başarıyla oluşturuldu.",
+    success: `Hesabınızın aktif olması için bir onay maili gönderildi.`,
   };
-};
+} ;

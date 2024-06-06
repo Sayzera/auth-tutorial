@@ -15,62 +15,75 @@ import { db } from "./lib/db";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
-    
+    signIn: "/auth/login",
+    error: "/auth/error",
   },
   events: {
     /**
-     * Kullanıcı kayıt edildikten sonra çalışır 
+     * Kullanıcı kayıt edildikten sonra çalışır
      */
-    async linkAccount({user}) {
+    async linkAccount({ user }) {
       await db.user.update({
         where: {
-          id:user.id
+          id: user.id,
         },
         data: {
-          emailVerified: new Date()
-        }
-      })
-    }
+          emailVerified: new Date(),
+        },
+      });
+    },
   },
   callbacks: {
+    async signIn({ user, account }) {
+      /* Eğer kimlik doğrulama dışında bir giriş varsa direk kabul et
+       * Çünkü sistemde tanımlı olan providerlardan bir tanesi ile giriş yapmıştır
+       */
+      if (account?.provider !== "credentials") return true;
+
+      if (user?.id) {
+        const existingUser = await getUserById(user.id);
+        if (!existingUser?.emailVerified) return false;
+        // TODO: Add 2FA check
+      }
+
+      return true;
+    },
+
     /**
      * Token objesini manupüle ettiğimizde session methodu üzerinden erişebiliyoruz
      * session değişkenini arayüzdede kullanabiliyoruz.
      */
 
     async jwt({ token }) {
-        if(!token.sub) return token
+      if (!token.sub) return token;
 
-        const existingUser = await getUserById(token.sub)
+      const existingUser = await getUserById(token.sub);
 
-        if(!existingUser) return token;
-        
-        token.role = existingUser.role;
-        
-        return token;
+      if (!existingUser) return token;
+
+      token.role = existingUser.role;
+
+      return token;
     },
     async session({ token, session }) {
-
       if (token.sub && session.user) {
         session.user.id = token.sub;
-        session.user.role = token.role as UserRole
+        session.user.role = token.role as UserRole;
       }
 
       return session;
     },
-  //   async signIn({user}) {
-  //     const existingUser = await getUserById(user.id as string);
-  //     // custom error 
-  //     // throw new YetkisizErisim();
-      
-  //     if(!existingUser || !existingUser.emailVerified) {
-  //         return false
-  //     }
+    //   async signIn({user}) {
+    //     const existingUser = await getUserById(user.id as string);
+    //     // custom error
+    //     // throw new YetkisizErisim();
 
-  //     return true;
-  // },
+    //     if(!existingUser || !existingUser.emailVerified) {
+    //         return false
+    //     }
+
+    //     return true;
+    // },
   },
 
   session: {

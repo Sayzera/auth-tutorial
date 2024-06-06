@@ -17,3 +17,7 @@
 * bcrypt
 - npm install bcrypt
 - npm i -D @types/bcrypt
+
+* uuid 
+- npm i uuid  
+- npm i --save-dev @types/uuid
