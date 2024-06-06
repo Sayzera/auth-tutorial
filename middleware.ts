@@ -23,7 +23,7 @@ export default auth((req) => {
     return null;
   }
 
-
+  // Eğer auth route ise bir kez login olduktan sonra DEFAULT_LOGIN_REDIRECT'e gitsin.
   if (isAuthRoute) {
     if (isLoggedIn) {
       /**

@@ -13,6 +13,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormError } from "../form.error";
@@ -20,6 +21,10 @@ import { FormSuccess } from "../form-sucess";
 import { login } from "@/actions/login";
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get('error') === 'OAuthAccountNotLinked' 
+  ? 'Bu e-Posta adresi farklı bir sağlayıcı üzerinden alınmıştır!'
+  : '';
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>();
 
@@ -44,7 +49,9 @@ const LoginForm = () => {
       login(values)
         .then((data) => {
           setError(data?.error);
-          setSuccess(data?.success)
+          // TODO: Add when we add 2FA
+          
+          // setSuccess(data?.success)
         })
     
     
@@ -104,7 +111,7 @@ console.log(error, success, 'error')
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSuccess message={success}/>
           <Button
           disabled={isPending}
