@@ -1,5 +1,15 @@
 import * as z from "zod";
 
+export const ResetSchema = z.object({
+  email: z
+    .string({
+      invalid_type_error: "Sadece metin girebilirsiniz",
+    })
+    .email({ message: "Lütfen geçerli bir E posta giriniz." }),
+
+});
+
+
 export const LoginSchema = z.object({
   email: z
     .string({
@@ -10,6 +20,8 @@ export const LoginSchema = z.object({
     message: "Şifre alanı gereklidir.",
   }),
 });
+
+
 
 export const RegisterSchema = z.object({
   email: z

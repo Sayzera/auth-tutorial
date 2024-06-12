@@ -35,6 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
+      console.log(account, user)
       /* Eğer kimlik doğrulama dışında bir giriş varsa direk kabul et
        * Çünkü sistemde tanımlı olan providerlardan bir tanesi ile giriş yapmıştır
        */

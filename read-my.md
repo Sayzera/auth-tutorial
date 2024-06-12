@@ -21,3 +21,6 @@
 * uuid 
 - npm i uuid  
 - npm i --save-dev @types/uuid
+
+* react-spinners
+- npm install react-spinners
