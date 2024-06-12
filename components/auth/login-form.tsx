@@ -25,9 +25,10 @@ import { login } from "@/actions/login";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
-  const urlError = searchParams.get('error') === 'OAuthAccountNotLinked' 
-  ? 'Bu e-Posta adresi farklı bir sağlayıcı üzerinden alınmıştır!'
-  : '';
+  const urlError = searchParams.get('error') === 'OAuthAccountNotLinked'
+    ? 'Bu e-Posta adresi farklı bir sağlayıcı üzerinden alınmıştır!'
+    : '';
+  const [showTwoFactor, setShowTwoFactor] = useState<boolean | undefined>(false)
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>();
 
@@ -40,6 +41,7 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      code: ''
     },
   });
 
@@ -47,19 +49,28 @@ const LoginForm = () => {
     setSuccess('');
     setError('');
 
+    alert(2)
 
     startTranstion(() => {
       login(values)
         .then((data) => {
           setError(data?.error);
-          // TODO: Add when we add 2FA
-          
           setSuccess(data?.success)
+          form.reset();
+
+          if (data?.twoFactor) {
+            setShowTwoFactor(data?.twoFactor)
+
+          }
         })
-    
-    
-  });
-}
+        .catch(() => {
+          setError('Bilinmeye bir hata oldu lütfen daha sonra tekrar deneyiniz')
+
+        })
+
+
+    });
+  }
 
 
 
@@ -72,61 +83,96 @@ const LoginForm = () => {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E Posta</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      {...field}
-                      placeholder="sezer.boluk@ornek.com"
-                      className=""
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Şifre</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="******"
-                      type="password"
-                      className=""
-                    />
-                  </FormControl>
-                  <Button size={'sm'} variant={'link'}
-                    asChild
-                    className="px-0 font-normal"
-                  >
-                    <Link href={'/auth/reset'}>
-                   Şifrenizi mi unuttunuz?
-                    </Link>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {
+            showTwoFactor && (
+              <>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Doğrulama Kodu</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isPending}
+                            {...field}
+                            placeholder="****"
+                            className=""
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )
+          }
+
+          {
+            !showTwoFactor && (
+              <>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>E Posta</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={isPending}
+                            {...field}
+                            placeholder="sezer.boluk@ornek.com"
+                            className=""
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Şifre</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            disabled={isPending}
+                            placeholder="******"
+                            type="password"
+                            className=""
+                          />
+                        </FormControl>
+                        <Button size={'sm'} variant={'link'}
+                          asChild
+                          className="px-0 font-normal"
+                        >
+                          <Link href={'/auth/reset'}>
+                            Şifrenizi mi unuttunuz?
+                          </Link>
+                        </Button>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )
+          }
+
+
           <FormError message={error || urlError} />
-          <FormSuccess message={success}/>
+          <FormSuccess message={success} />
           <Button
-          disabled={isPending}
-          type="submit" className="w-full">
-            Giriş Yap
+            disabled={isPending}
+            type="submit" className="w-full">
+            {!showTwoFactor ? 'Giriş Yap' : 'İki adımlı doğrulamayı onayla'}
           </Button>
         </form>
       </Form>

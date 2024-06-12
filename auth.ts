@@ -6,6 +6,7 @@ import { UserRole } from "@prisma/client";
 import { getUserById } from "./data/user";
 
 import { db } from "./lib/db";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 // yetki özelle
 // export class YetkisizErisim extends AuthError {
@@ -44,7 +45,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user?.id) {
         const existingUser = await getUserById(user.id);
         if (!existingUser?.emailVerified) return false;
+
         // TODO: Add 2FA check
+        if (existingUser.isTwoFactorEnabled) {
+          const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+          console.log(twoFactorConfirmation, 'twoFactorConfirmation')
+          if (!twoFactorConfirmation) return false
+
+          // Delete two factor confirmation for next sign in
+          await db.twoFactorConfirmation.delete({
+            where: {
+              id: twoFactorConfirmation.id
+            }
+          })
+        }
       }
 
       return true;
