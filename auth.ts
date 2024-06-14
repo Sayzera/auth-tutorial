@@ -17,7 +17,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   pages: {
     signIn: "/auth/login",
+    signOut: '/auth/login', 
     error: "/auth/error",
+    
+    
   },
   events: {
     /**
@@ -46,10 +49,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const existingUser = await getUserById(user.id);
         if (!existingUser?.emailVerified) return false;
 
-        // TODO: Add 2FA check
         if (existingUser.isTwoFactorEnabled) {
           const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
-          console.log(twoFactorConfirmation, 'twoFactorConfirmation')
           if (!twoFactorConfirmation) return false
 
           // Delete two factor confirmation for next sign in

@@ -118,7 +118,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-    return {
+
+
+    return { 
       success: "Başarıyla giriş yapıldı",
     };
   } catch (error) {

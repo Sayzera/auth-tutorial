@@ -59,8 +59,8 @@ const LoginForm = () => {
 
           if (data?.twoFactor) {
             setShowTwoFactor(data?.twoFactor)
-
           }
+
         })
         .catch(() => {
           setError('Bilinmeye bir hata oldu lütfen daha sonra tekrar deneyiniz')
