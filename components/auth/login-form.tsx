@@ -49,14 +49,13 @@ const LoginForm = () => {
     setSuccess('');
     setError('');
 
-    alert(2)
 
     startTranstion(() => {
       login(values)
         .then((data) => {
           setError(data?.error);
           setSuccess(data?.success)
-          form.reset();
+          // form.reset();
 
           if (data?.twoFactor) {
             setShowTwoFactor(data?.twoFactor)
@@ -71,6 +70,8 @@ const LoginForm = () => {
 
     });
   }
+
+  // console.log(form.formState.errors , 'form.formState')
 
 
 
