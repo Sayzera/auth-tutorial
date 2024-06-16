@@ -25,6 +25,8 @@ import { login } from "@/actions/login";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl')
+  console.log(callbackUrl, 'callbackUrl')
   const urlError = searchParams.get('error') === 'OAuthAccountNotLinked'
     ? 'Bu e-Posta adresi farklı bir sağlayıcı üzerinden alınmıştır!'
     : '';
@@ -51,7 +53,7 @@ const LoginForm = () => {
 
 
     startTranstion(() => {
-      login(values)
+      login(values,callbackUrl ?? '')
         .then((data) => {
           setError(data?.error);
           setSuccess(data?.success)
