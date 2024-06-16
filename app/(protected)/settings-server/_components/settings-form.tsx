@@ -232,7 +232,7 @@ export const SettingsForm = ({
                         İki Adımlı Doğrulama
                       </FormLabel>
                       <FormDescription>
-                        Sizin hesabınız için "İki Adımlı Doğrulamayı" aktif eder.
+                        Sizin hesabınız için İki Adımlı Doğrulamayı aktif eder.
                       </FormDescription>
                     </div>
                     <FormControl>

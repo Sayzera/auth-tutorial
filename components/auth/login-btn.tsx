@@ -21,6 +21,7 @@ export const LoginButton = ({
   asChild,
 }: LoginButtonProps) => {
   const [mounted, setMounted] = useState(true);
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -30,7 +31,6 @@ export const LoginButton = ({
 
   if (mounted) return null
 
-  const router = useRouter();
   const onClick = () => {
     router.push('/auth/login')
   };

@@ -49,8 +49,8 @@ import { Switch } from "@/components/ui/switch";
 const SettingsPage = () => {
   const { update } = useSession();
   const user = useCurrentUser();
-  const [success, setSuccess] = useState<string | undefined>('');
-  const [errror, setError] = useState<string | undefined>('');
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [errror, setError] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
 
@@ -59,8 +59,8 @@ const SettingsPage = () => {
     defaultValues: {
       password: undefined,
       newPassword: undefined,
-      name: user?.name || '',
-      email: user?.email || '',
+      name: user?.name || "",
+      email: user?.email || "",
       role: user?.role as UserRole,
       isTwoFactorEnabled: undefined
 
@@ -72,15 +72,13 @@ const SettingsPage = () => {
     form.reset({
       password: undefined,
       newPassword: undefined,
-      name: user?.name || '',
-      email: user?.email || '',
+      name: user?.name || "",
+      email: user?.email || "",
       role: user?.role as UserRole,
       isTwoFactorEnabled: user?.isTwoFactorEnabled
     })
   }, [user])
 
-
-  console.log(user, 'user?.role')
 
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
@@ -246,7 +244,7 @@ const SettingsPage = () => {
                         İki Adımlı Doğrulama
                       </FormLabel>
                       <FormDescription>
-                        Sizin hesabınız için "İki Adımlı Doğrulamayı" aktif eder.
+                        Sizin hesabınız için İki Adımlı Doğrulamayı aktif eder.
                       </FormDescription>
                     </div>
                     <FormControl>
