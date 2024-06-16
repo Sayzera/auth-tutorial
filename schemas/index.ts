@@ -1,8 +1,39 @@
+import { newPassword } from "@/actions/new-password";
+import { UserRole } from "@prisma/client";
 import * as z from "zod";
 
 export const SettingsSchema = z.object({
-  name: z.optional(z.string())
+  name: z.optional(z.string()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
+  role: z.enum([UserRole.ADMIN, UserRole.USER]),
+  email: z.optional(z.string().email({
+    message: 'Lütfen geçerli bir e-Posta adresi giriniz'
+  })),
+  password: z.optional(z.string().min(6)),
+  newPassword: z.optional(z.string().min(6))
 })
+  .refine((data) => {
+    if (data.password && !data.newPassword) {
+      return false
+    }
+
+    return true;
+
+  }, {
+    message: 'Yeni şifre gereklidir',
+    path: ['newPassword']
+  })
+  .refine((data) => {
+    if (!data.password && data.newPassword) {
+      return false
+    }
+
+    return true;
+
+  }, {
+    message: 'Şifre gereklidir',
+    path: ['password']
+  })
 
 export const NewPasswordSchema = z
   .object({

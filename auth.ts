@@ -14,7 +14,7 @@ import { getAccountByUserId } from "./data/account";
 //     static type = "YetkisizErisim"
 //   }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth  } = NextAuth({
   adapter: PrismaAdapter(db),
   pages: {
     signIn: "/auth/login",
@@ -40,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log(account, user)
       /* Eğer kimlik doğrulama dışında bir giriş varsa direk kabul et
        * Çünkü sistemde tanımlı olan providerlardan bir tanesi ile giriş yapmıştır
        */
@@ -97,9 +96,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.isTwoFactorEnabled = token?.isTwoFactorEnabled as boolean ?? false
       }
 
-      if(session.user.name && token.email &&  session.user.isOAuth) {
+      if(session.user) {
         session.user.name = token.name;
-        session.user.email = token.email;
+        session.user.email = token.email ?? '';
         session.user.isOAuth = token.isOAuth as boolean
 
       }

@@ -19,7 +19,6 @@ import { FaUser } from "react-icons/fa";
 
 export const UserButton = () => {
     const user = useCurrentUser()
-    console.log(user?.image )
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

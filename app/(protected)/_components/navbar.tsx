@@ -33,7 +33,13 @@ export const Navbar = () => {
           asChild
           variant={pathname === "/settings" ? "default" : "outline"}
         >
-          <Link href={"/settings"}>Ayarlar</Link>
+          <Link href={"/settings"}>Ayarlar Client</Link>
+        </Button>
+        <Button
+          asChild
+          variant={pathname === "/settings-server" ? "default" : "outline"}
+        >
+          <Link href={"/settings-server"}>Ayarlar Server</Link>
         </Button>
       </div>
 

@@ -6,11 +6,12 @@ type UserData = {
     image?: string | null; 
     name?: string;
     role?: string;
+    isTwoFactorEnabled?: boolean;
+    isOAuth?: boolean;
 }
 
 export const useCurrentUser = () => {
   const [session, setSession] = useState<UserData>({});
-  console.log(session);
 
   useEffect(() => {
     fetch("/api/auth/session")

@@ -45,10 +45,12 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-sucess";
 import { UserRole } from "@prisma/client";
 import { Switch } from "@/components/ui/switch";
+import { ExtendedUser } from "@/types/next-auth";
 
-const SettingsPage = () => {
+export const SettingsForm = ({
+    user
+}: ExtendedUser) => {
   const { update } = useSession();
-  const user = useCurrentUser();
   const [success, setSuccess] = useState<string | undefined>('');
   const [errror, setError] = useState<string | undefined>('');
 
@@ -62,26 +64,10 @@ const SettingsPage = () => {
       name: user?.name || '',
       email: user?.email || '',
       role: user?.role as UserRole,
-      isTwoFactorEnabled: undefined
+      isTwoFactorEnabled: user.isTwoFactorEnabled
 
     }
   })
-
-
-  useEffect(() => {
-    form.reset({
-      password: undefined,
-      newPassword: undefined,
-      name: user?.name || '',
-      email: user?.email || '',
-      role: user?.role as UserRole,
-      isTwoFactorEnabled: user?.isTwoFactorEnabled
-    })
-  }, [user])
-
-
-  console.log(user, 'user?.role')
-
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
 
@@ -276,6 +262,5 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
 
 
